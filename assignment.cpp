@@ -31,6 +31,7 @@ void test1() {
 	cout << "=========== test1" << endl;
 	struct entry e = {10, 100};
 	struct entry& alias = e; // no assignment triggered
+	struct entry& alias_ = alias;
 
 	struct entry other;
 	other = alias; // trigger an assignment
