@@ -1,3 +1,5 @@
+// See discussion:
+// http://stackoverflow.com/questions/92396/why-cant-variables-be-declared-in-a-switch-statement
 #include <iostream>
 
 using namespace std;
