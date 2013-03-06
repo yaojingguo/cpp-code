@@ -21,11 +21,11 @@ class thing {
 
 int main(int argc, const char *argv[]) 
 {
-  thing one;
-  thing one_ = thing();
+  thing one; // constructor
+  thing one_ = thing(); // constructor
 
-  one = one_;
-  thing two(one);
+  one = one_; // assignment operator
+  thing two(one); // copy constructor
 
   return 0;
 }

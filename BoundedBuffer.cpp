@@ -1,6 +1,7 @@
 #include <pthread.h>
 #include <assert.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #define N 3
 
@@ -8,7 +9,7 @@ class BoundedBuffer {
   private:
     int buffer[N];
     int last_position;
-    int count;
+    volatile int count;
 
     pthread_mutex_t mutex;
     pthread_cond_t non_full;
@@ -36,10 +37,8 @@ BoundedBuffer::~BoundedBuffer() {
 int BoundedBuffer::remove() {
   int item;
   assert(pthread_mutex_lock(&mutex) == 0);
-  printf("buffer remove\n");
-  while (count == 0)
+  while (count == 0) 
     assert(pthread_cond_wait(&non_empty, &mutex) == 0);
-  printf("===========\n");
   item = buffer[(last_position - count) % N];
   count--;
   pthread_cond_signal(&non_full);
@@ -65,7 +64,7 @@ static void append(BoundedBuffer& buf, int item) {
 
 static void remove(BoundedBuffer& buf) {
   int item;
-  printf("removing\n");
+  printf("removing...\n");
   item = buf.remove();
   printf("removed: %d\n", item);
 }
@@ -86,24 +85,44 @@ static void test2() {
   remove(buf);
 }
 
-void *run(void *buf_p) {
+void *evil_run(void *buf_p) {
+  // A copy consturctor is invoked here. So buf is different from the bounded 
+  // buffer pointed to by buf_p. Weird behaviour will happen.
+  // Debugging C++ program is hard. Debugging concurrent C++ program is even 
+  // harder.
   BoundedBuffer buf = *((BoundedBuffer*) buf_p);
   remove(buf);
   pthread_exit(NULL);
 }
 
-static void test3() {
+void *run(void *buf_p) {
+  remove(*(BoundedBuffer*)buf_p);
+  pthread_exit(NULL);
+}
+
+static void test_interaction(void *(*start_routine) (void *)) {
   pthread_t t;
-  BoundedBuffer buf;
-  assert(pthread_create(&t, NULL, run, &buf) == 0);
-  append(buf, 1);
-  append(buf, 2);
-  append(buf, 3);
+  BoundedBuffer* buf_p = new BoundedBuffer();
+  assert(pthread_create(&t, NULL, start_routine, buf_p) == 0);
+  sleep(1);
+  append(*buf_p, 1);
+  append(*buf_p, 2);
+  append(*buf_p, 3);
+}
+
+static void test3() {
+  test_interaction(run);
+}
+
+static void test4() {
+  test_interaction(evil_run);
 }
 
 int main(int argc, const char *argv[]) {
+  // test1();
   // test2();
   test3();
+  // test4();
   
   pthread_exit(NULL);
 }
