@@ -31,12 +31,16 @@ int main(int argc, const char *argv[])
 {
   thing one; // constructor
   one.info();
-  thing one_ = thing(); // constructor
 
+  thing one_ = thing(); // constructor
   one = one_; // assignment operator
   one.info();
+
   thing two(one); // copy constructor
   two.info();
+
+  thing three = one;
+  three.info();
 
   return 0;
 }
