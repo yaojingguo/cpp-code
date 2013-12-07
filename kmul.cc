@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <vector>
 #include <algorithm>
+#include <string.h>
 
 // Use little endian
 using namespace std;
@@ -10,6 +11,9 @@ using namespace std;
 #define byte unsigned int 
 
 #define LSB_MASK  0xFFFFFFFF
+
+#define N 4096
+char buf[N];
 
 byte to_lsb(word a)
 {
@@ -38,12 +42,28 @@ void byte_sub(byte a, byte b, byte old_carry, byte& lsb, byte& new_carry)
   new_carry = b < a ? 1 : 0;
 }
 
-void info(vector<byte> a)
+void info(vector<byte>& a)
 {
   printf("0x");
   for (int i = a.size() - 1; i >= 0; i--)
     printf("%08X", a[i]);
   printf("\n");
+}
+
+void to_str(vector<byte>& a, char str[], int size)
+{
+  char* q = str;
+  int cnt;
+  int max_idx = a.size() - 1;
+  for (int i = max_idx; i >= 0; i--) {
+    if (i == max_idx) 
+      cnt = snprintf(q, size, "0x%X", a[i]);
+    else
+      cnt = snprintf(q, size, "%08X", a[i]);
+    size -= cnt;
+    q += cnt;
+    assert(size > 0);
+  }
 }
 
 void pad(vector<byte>& src, vector<byte>& dest, int size)
@@ -152,14 +172,15 @@ void test_mul_instruction()
 
 void test_add()
 {
-  printf("Testing add\n");
   vector<byte> src;
   vector<byte> dest;
 
   src.push_back(0xFFFFFFFF);
   dest.push_back(0xFFFFFFFF);
   add(src, dest);
-  info(dest);
+  to_str(dest, buf, N);
+  assert(strcmp("0x1FFFFFFFE", buf) == 0);
+
 
   src.clear();
   dest.clear();
@@ -171,18 +192,19 @@ void test_add()
   dest.push_back(0xFFFFFFFF);
   dest.push_back(0xE0000001);
   add(src, dest);
-  info(dest);
+  to_str(dest, buf, N);
+  assert(strcmp("0xABCED0000002FFFFFFFE", buf) == 0);
 }
 
 void test_sub()
 {
-  printf("Testing sub\n");
   vector<byte> src;
   vector<byte> dest;
   dest.push_back(0xFFFF0000);
   src.push_back( 0xFF000000);
   sub(src, dest);
-  info(dest);
+  to_str(dest, buf, N);
+  assert(strcmp("0xFF0000", buf) == 0);
 
   src.clear();
   dest.clear();
@@ -191,18 +213,19 @@ void test_sub()
   src.push_back(0x2);
   src.push_back(0xF0);
   sub(src, dest);
-  info(dest);
+  to_str(dest, buf, N);
+  assert(strcmp("0xEFFFFFFFF", buf) == 0);
 }
 
 void test_mul()
 {
-  printf("Test mul\n");
   vector<byte> src;
   vector<byte> dest;
-  // src.push_back(0xFFFFFFFF);
-  // dest.push_back(0x11111111);
-  // mul(src, dest);
-  // info(dest);
+  src.push_back(0xFFFFFFFF);
+  dest.push_back(0x11111111);
+  mul(src, dest);
+  to_str(dest, buf, N);
+  assert(strcmp("0x11111110EEEEEEEF", buf) == 0);
 
   src.clear();
   dest.clear();
@@ -213,7 +236,8 @@ void test_mul()
   dest.push_back(0x10);
   dest.push_back(0x100);
   mul(src, dest);
-  info(dest);
+  to_str(dest, buf, N);
+  assert(strcmp("0xFF0000010DF000000FE0", buf) == 0);
 
   src.clear();
   dest.clear();
@@ -224,7 +248,8 @@ void test_mul()
   dest.push_back(0xFFFFFFFF);
   dest.push_back(0xFFFFFFFD);
   mul(src, dest);
-  info(dest);
+  to_str(dest, buf, N);
+  assert(strcmp("0xFEFFFFFEFFFFFFFD04FFFFFF02", buf) == 0);
 
   src.clear();
   dest.clear();
@@ -246,7 +271,11 @@ void test_mul()
   dest.push_back(0x90756784);
   dest.push_back(0xAAAA1122);
   mul(src, dest);
-  info(dest);
+  to_str(dest, buf, N);
+  assert(strcmp("0x5A4013DFA63FA51DB98A302172759F41"
+                "40FF7F8F0100F7611012289B5371283D53"
+                "7FCCC3202CD44AE56E00920E05CC4D0B31"
+                "B29143BB076927F702854DC138A0", buf) == 0);
 }
 
 int main(int argc, const char *argv[]) 
