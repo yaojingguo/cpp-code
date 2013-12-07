@@ -119,17 +119,17 @@ void mul(vector<byte>& src, vector<byte>& dest)
   add(dest_low, dest_high);
   mul(src_high, dest_high);
 
-  printf("high high: ");
-  info(high_high);
-  printf("low: ");
-  info(low);
-  printf("high: ");
-  info(dest_high);
+  // printf("high high: ");
+  // info(high_high);
+  // printf("low: ");
+  // info(low);
+  // printf("high: ");
+  // info(dest_high);
   
   sub(low, dest_high);
   sub(high_high, dest_high);
-  printf("XXX high: ");
-  info(dest_high);
+  // printf("XXX high: ");
+  // info(dest_high);
   
   for (int i = 0; i < 2 * split; i++)
     high_high.insert(high_high.begin(), 0);
@@ -223,6 +223,28 @@ void test_mul()
   src.push_back(0xFF);
   dest.push_back(0xFFFFFFFF);
   dest.push_back(0xFFFFFFFD);
+  mul(src, dest);
+  info(dest);
+
+  src.clear();
+  dest.clear();
+  src.push_back(0x12345678);
+  src.push_back(0xAABB5643);
+  src.push_back(0x756868AB);
+  src.push_back(0xFFFFEEEE);
+  src.push_back(0x98790ACD);
+  src.push_back(0x88660011);
+  src.push_back(0x87097922);
+  src.push_back(0x87609798);
+
+  dest.push_back(0xAAA7DCAC);
+  dest.push_back(0x90789878);
+  dest.push_back(0x87698152);
+  dest.push_back(0x87658222);
+  dest.push_back(0x87091789);
+  dest.push_back(0x13678689);
+  dest.push_back(0x90756784);
+  dest.push_back(0xAAAA1122);
   mul(src, dest);
   info(dest);
 }
