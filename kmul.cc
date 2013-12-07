@@ -5,6 +5,7 @@
 #include <string.h>
 
 // Use little endian
+// Test on 32 bit machine.
 using namespace std;
 
 #define word unsigned long long
