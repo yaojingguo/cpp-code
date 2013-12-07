@@ -35,7 +35,7 @@ void byte_sub(byte a, byte b, byte old_carry, byte& lsb, byte& new_carry)
   word old_carry_w = (word) old_carry;
   word diff = b_w - (a_w + old_carry);
   lsb = to_lsb(diff);
-  new_carry = b > a ? 1 : 0;
+  new_carry = b < a ? 1 : 0;
 }
 
 // dest = src + dest
@@ -51,7 +51,6 @@ void add(vector<byte> src, vector<byte>& dest)
     dest.push_back(0);
   for (i = j = 0, carry = 0; i < src.size() && j < dest.size(); i++, j++) {
     byte_add(src[i], dest[i], carry, lsb, msb);
-    // printf("lsb: 0X%x, msb: 0X%x\n", lsb, msb);
     dest[i] = lsb;
     carry = msb;
   }
@@ -76,6 +75,8 @@ void sub(vector<byte>& src, vector<byte>& dest)
     old_carry = new_carry;
     dest[i] = lsb;
   }
+  while (src.back() == 0)
+    src.pop_back();
   while (dest.back() == 0)
     dest.pop_back();
 }
@@ -121,7 +122,7 @@ void info(vector<byte> a)
 {
   printf("0x");
   for (int i = a.size() - 1; i >= 0; i--)
-    printf("%X", a[i]);
+    printf("%08X", a[i]);
   printf("\n");
 }
 
@@ -135,6 +136,7 @@ void test_mul_instruction()
 
 void test_add()
 {
+  printf("Testing add\n");
   vector<byte> src;
   vector<byte> dest;
 
@@ -158,6 +160,22 @@ void test_add()
 
 void test_sub()
 {
+  printf("Testing sub\n");
+  vector<byte> src;
+  vector<byte> dest;
+  dest.push_back(0xFFFF0000);
+  src.push_back( 0xFF000000);
+  sub(src, dest);
+  info(dest);
+
+  src.clear();
+  dest.clear();
+  dest.push_back(0x1);
+  dest.push_back(0xFF);
+  src.push_back(0x2);
+  src.push_back(0xF0);
+  sub(src, dest);
+  info(dest);
 }
 
 void test_mul()
