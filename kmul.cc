@@ -73,6 +73,7 @@ void sub(vector<byte>& src, vector<byte>& dest)
   byte old_carry, new_carry, lsb;
   for (i = 0, old_carry = 0; i < size; i++) {
     byte_sub(src[i], dest[i], old_carry, lsb, new_carry);
+    old_carry = new_carry;
     dest[i] = lsb;
   }
   while (dest.back() == 0)
