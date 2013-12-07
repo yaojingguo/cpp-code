@@ -42,14 +42,6 @@ void byte_sub(byte a, byte b, byte old_carry, byte& lsb, byte& new_carry)
   new_carry = b < a ? 1 : 0;
 }
 
-void info(vector<byte>& a)
-{
-  printf("0x");
-  for (int i = a.size() - 1; i >= 0; i--)
-    printf("%08X", a[i]);
-  printf("\n");
-}
-
 void to_str(vector<byte>& a, char str[], int size)
 {
   char* q = str;
@@ -138,18 +130,9 @@ void mul(vector<byte>& src, vector<byte>& dest)
   add(src_low, src_high);
   add(dest_low, dest_high);
   mul(src_high, dest_high);
-
-  // printf("high high: ");
-  // info(high_high);
-  // printf("low: ");
-  // info(low);
-  // printf("high: ");
-  // info(dest_high);
   
   sub(low, dest_high);
   sub(high_high, dest_high);
-  // printf("XXX high: ");
-  // info(dest_high);
   
   for (int i = 0; i < 2 * split; i++)
     high_high.insert(high_high.begin(), 0);
