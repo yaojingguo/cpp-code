@@ -38,36 +38,50 @@ void byte_sub(byte a, byte b, byte old_carry, byte& lsb, byte& new_carry)
   new_carry = b < a ? 1 : 0;
 }
 
+void info(vector<byte> a)
+{
+  printf("0x");
+  for (int i = a.size() - 1; i >= 0; i--)
+    printf("%08X", a[i]);
+  printf("\n");
+}
+
+void pad(vector<byte>& src, vector<byte>& dest, int size)
+{
+  while (src.size() < size)
+    src.push_back(0);
+  while (dest.size() < size) 
+    dest.push_back(0);
+}
+
+void normalize(vector<byte>& num)
+{
+  while (num.back() == 0)
+    num.pop_back();
+}
+
 // dest = src + dest
-void add(vector<byte> src, vector<byte>& dest)
+void add(vector<byte>& src, vector<byte>& dest)
 {
   int i, j, size;
   byte carry, lsb, msb;
   word sum; 
   size = max(src.size(), dest.size()) + 1;
-  while (src.size() < size)
-    src.push_back(0);
-  while (dest.size() < size)
-    dest.push_back(0);
+  pad(src, dest, size);
   for (i = j = 0, carry = 0; i < src.size() && j < dest.size(); i++, j++) {
     byte_add(src[i], dest[i], carry, lsb, msb);
     dest[i] = lsb;
     carry = msb;
   }
-  while (dest.back() == 0)
-    dest.pop_back();
-  while (src.back() == 0)
-    src.pop_back();
+  normalize(src);
+  normalize(dest);
 }
 
 // dest = dest - src
 void sub(vector<byte>& src, vector<byte>& dest)
 {
   int size = max(src.size(), dest.size());
-  while (src.size() < size)
-    src.push_back(0);
-  while (dest.size() < size) 
-    dest.push_back(0);
+  pad(src, dest, size);
   int i;
   byte old_carry, new_carry, lsb;
   for (i = 0, old_carry = 0; i < size; i++) {
@@ -75,10 +89,8 @@ void sub(vector<byte>& src, vector<byte>& dest)
     old_carry = new_carry;
     dest[i] = lsb;
   }
-  while (src.back() == 0)
-    src.pop_back();
-  while (dest.back() == 0)
-    dest.pop_back();
+  normalize(src);
+  normalize(dest);
 }
 
 // XXX Too many copies of bytes are made here.
@@ -86,12 +98,14 @@ void sub(vector<byte>& src, vector<byte>& dest)
 void mul(vector<byte>& src, vector<byte>& dest)
 {
   int size = max(src.size(), dest.size());
-  int split = size / 2;
+  pad(src, dest, size);
   if (size == 1) {
     word product = (word) src[0] * (word) dest[0];
     dest[0] = to_lsb(product);
     dest.push_back(to_msb(product));
+    return;
   }
+  int split = size / 2;
   vector<byte> src_low(src.begin(), src.begin() + split);
   vector<byte> src_high(src.begin() + split, src.end());
   vector<byte> dest_low(dest.begin(), dest.begin() + split);
@@ -101,29 +115,31 @@ void mul(vector<byte>& src, vector<byte>& dest)
   mul(src_high, high_high);
   vector<byte> low(dest_low);
   mul(src_low, low);
-  add(src_low, dest_high);
-  add(src_high, dest_low);
-  mul(dest_low, dest_high);
+  add(src_low, src_high);
+  add(dest_low, dest_high);
+  mul(src_high, dest_high);
 
+  printf("high high: ");
+  info(high_high);
+  printf("low: ");
+  info(low);
+  printf("high: ");
+  info(dest_high);
+  
   sub(low, dest_high);
   sub(high_high, dest_high);
+  printf("XXX high: ");
+  info(dest_high);
   
   for (int i = 0; i < 2 * split; i++)
     high_high.insert(high_high.begin(), 0);
   for (int i = 0; i < split; i++)
     dest_high.insert(dest_high.begin(), 0);
   dest.clear();
+  dest.push_back(0);
   add(high_high, dest);
   add(dest_high, dest);
   add(low, dest);
-}
-
-void info(vector<byte> a)
-{
-  printf("0x");
-  for (int i = a.size() - 1; i >= 0; i--)
-    printf("%08X", a[i]);
-  printf("\n");
 }
 
 void test_mul_instruction()
@@ -180,6 +196,35 @@ void test_sub()
 
 void test_mul()
 {
+  printf("Test mul\n");
+  vector<byte> src;
+  vector<byte> dest;
+  // src.push_back(0xFFFFFFFF);
+  // dest.push_back(0x11111111);
+  // mul(src, dest);
+  // info(dest);
+
+  src.clear();
+  dest.clear();
+  // src:  0xFF000000FE
+  // dest: 0x10000000010
+  src.push_back(0xFE);
+  src.push_back(0xFF);
+  dest.push_back(0x10);
+  dest.push_back(0x100);
+  mul(src, dest);
+  info(dest);
+
+  src.clear();
+  dest.clear();
+  // src:  0x000000FF000000FE
+  // dest: 0xFFFFFFFDFFFFFFFF 
+  src.push_back(0xFE);
+  src.push_back(0xFF);
+  dest.push_back(0xFFFFFFFF);
+  dest.push_back(0xFFFFFFFD);
+  mul(src, dest);
+  info(dest);
 }
 
 int main(int argc, const char *argv[]) 
