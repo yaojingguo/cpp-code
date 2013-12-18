@@ -27,7 +27,7 @@ class thing {
     }
 };
 
-int main(int argc, const char *argv[]) 
+void test1()
 {
   thing one; // constructor
   one.info();
@@ -41,6 +41,34 @@ int main(int argc, const char *argv[])
 
   thing three = one;
   three.info();
+}
 
+
+thing func()
+{
+  thing t;
+  return t;
+}
+
+thing static_func()
+{
+  static thing t; // Eliminate RVO
+  return t;
+}
+
+// http://en.wikipedia.org/wiki/Return_value_optimization
+void test2()
+{
+  thing t1 = func();
+  t1.info();
+
+  thing t2 = static_func();
+  t2.info();
+}
+
+int main(int argc, const char *argv[]) 
+{
+  // test1();
+  test2();
   return 0;
 }
