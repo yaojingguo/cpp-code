@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "foo.h"
+#include "greeting.h"
 
 void bar();
 
