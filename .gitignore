@@ -12,3 +12,5 @@
 *.a
 
 a.out
+
+bazel-*

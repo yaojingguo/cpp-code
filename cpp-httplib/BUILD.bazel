@@ -2,6 +2,5 @@ load("@rules_cc//cc:defs.bzl", "cc_binary")
 
 cc_binary(
     name = "server",
-    srcs = ["server.cc"],
-    hdrs = ["httplib.h"],
+    srcs = ["server.cc", "httplib.h"],
 )
