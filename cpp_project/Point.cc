@@ -9,10 +9,10 @@ class A {
   A(A& a):pointer(new int(*a.pointer)) { 
     std::cout << "copy constructing " << pointer << std::endl; 
   } 
-  // A(A&& a):pointer(a.pointer) { 
-  //   a.pointer = nullptr;
-  //   std::cout << "moving constructing " << pointer << std::endl; 
-  // }
+  A(A&& a):pointer(a.pointer) { 
+    a.pointer = nullptr;
+    std::cout << "moving constructing " << pointer << std::endl; 
+  }
   ~A(){ 
     std::cout << "destructing " << pointer << std::endl; 
     delete pointer; 
@@ -36,11 +36,9 @@ void by_move(A& a) {
 }
 
 int main() {
-  // A obj = return_rvalue(false);
-  // std::cout << "obj:" << std::endl;
-  // std::cout << obj.pointer << std::endl;
-  // std::cout << *obj.pointer << std::endl;
-  A a;
-  by_move(std::move(a));
+  A obj = return_rvalue(false);
+  std::cout << "obj:" << std::endl;
+  std::cout << "  " << obj.pointer << std::endl;
+  std::cout << "  " << *obj.pointer << std::endl;
   return 0;
 }

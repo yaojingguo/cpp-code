@@ -60,14 +60,14 @@ void Process(Foo&& f) {
 
 template <typename T>
 void LogAndProcessNotForward(T&& a) {
-  // std::cout << a.Info() << std::endl;
-  // Process(a); 
+  std::cout << a.Info() << std::endl;
+  Process(a); 
 }
 
 template <typename T>
 void LogAndProcessWithForward(T&& a) {
-  // std::cout << a.Info() << std::endl;
-  // Process(std::forward<T>(a));
+  std::cout << a.Info() << std::endl;
+  Process(std::forward<T>(a));
 }
 
 void one() {
