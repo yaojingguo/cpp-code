@@ -4,3 +4,16 @@ cc_binary(
     name = "server",
     srcs = ["server.cc", "httplib.h"],
 )
+
+cc_binary(
+    name = "client",
+    srcs = ["client.cc", "httplib.h"]
+)
+
+filegroup(
+    name = "http_all",
+    srcs = [
+        "//:client",
+        "//:server",
+    ],
+)
