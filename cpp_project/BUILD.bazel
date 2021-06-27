@@ -1,0 +1,9 @@
+cc_test(
+  name = "file_test",
+  srcs = ["file_test.cc"],
+  copts = ["-Iexternal/gtest/include"],
+  deps = [
+    "@gtest//:gtest",
+    "@gtest//:gtest_main",
+  ],
+)
