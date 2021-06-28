@@ -27,13 +27,13 @@ A return_rvalue(bool test) {
   else return b;     // 等价于 static_cast<A&&>(b);
 }
 
-void by_move(A&& a) {
-  std::cout << "move function" << std::endl;
-}
+// void by_move(A&& a) {
+//   std::cout << "move function" << std::endl;
+// }
 
-void by_move(A& a) {
-  std::cout << "copy function" << std::endl;
-}
+// void by_move(A& a) {
+//   std::cout << "copy function" << std::endl;
+// }
 
 int main() {
   A obj = return_rvalue(false);

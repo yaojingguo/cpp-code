@@ -46,10 +46,6 @@ class Foo {
   std::vector<int> v_;
 };
 
-Foo GetFoo() {
-  return Foo("GetFoo", std::vector<int>(11));
-}
-
 void Proces(const Foo& f) {
   std::cout << "lvalue reference" << std::endl;
 }
@@ -101,6 +97,11 @@ void two() {
   f3 = std::move(f2);  // 调用移动赋值操作符
 }
 
+
+Foo GetFoo() {
+  return Foo("GetFoo", std::vector<int>(11));
+}
+
 void three() {
   std::vector<int> v3(3);
   Foo f3("world", v3);
@@ -108,17 +109,18 @@ void three() {
 }
 
 void four() {
-  Foo f3;
-  f3 = GetFoo();
+  // Foo f3;
+  // f3 = GetFoo();
 
-  LogAndProcessNotForward<Foo>(GetFoo());                         // 输出 lvalue reference
-  LogAndProcessNotForward<Foo>(std::move(GetFoo()));  // 输出 lvalue reference
+  // LogAndProcessNotForward<Foo>(GetFoo());                         // 输出 lvalue reference
+  // LogAndProcessNotForward<Foo>(std::move(GetFoo()));  // 输出 lvalue reference
+  // LogAndProcessNotForward<Foo>(std::move(GetFoo()));  // 输出 lvalue reference
 
-  LogAndProcessWithForward(GetFoo());                        // 输出 lvalue reference
-  LogAndProcessWithForward(std::move(GetFoo()));  // 输出 rvalue reference
+  // LogAndProcessWithForward(GetFoo());                        // 输出 lvalue reference
+  // LogAndProcessWithForward(std::move(GetFoo()));  // 输出 rvalue reference
 }
 
 int main() {
-  four();
+  three();
   return 0; 
 }

@@ -52,7 +52,10 @@ void call(Foo&& f) {
 }
 
 int main() {
-  Foo f3;
-  call(std::move(f3));
+  vector<int> vec = {1, 2, 3};
+  Foo f3("abc", vec);
+  Foo f4 = std::move(f3);
+  cout << f3.Info() << endl;
+  cout << f4.Info() << endl;
 }
 
