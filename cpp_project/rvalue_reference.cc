@@ -45,13 +45,6 @@ void f(MemoryBlock&&)
    cout << "In f(MemoryBlock&&). This version can modify the parameter." << endl;
 }
 
-int main()
-{
-   MemoryBlock block;
-   f(block);
-   f(MemoryBlock());
-}
-
 void one() {
    int a = 4, b = 5;
    W* pw = factory<W>(a, b);
@@ -65,3 +58,10 @@ void one() {
    delete pz;
 }
 
+
+int main()
+{
+   MemoryBlock block;
+   f(block);
+   f(MemoryBlock());
+}
