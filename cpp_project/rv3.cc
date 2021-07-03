@@ -6,6 +6,10 @@ using namespace std;
 // A class that contains a memory resource.
 class MemoryBlock {
    // TODO: Add resources for the class here.
+   public:
+   void info() {
+     cout << "I am a memory block" << endl;
+   }
 };
 
 void g(const MemoryBlock&) {
