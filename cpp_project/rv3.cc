@@ -1,6 +1,8 @@
 // cast-reference.cpp
 // Compile with: /EHsc
 #include <iostream>
+#include <utility>
+
 using namespace std;
 
 // A class that contains a memory resource.
@@ -24,4 +26,6 @@ int main() {
    MemoryBlock block;
    g(block);
    g(static_cast<MemoryBlock&&>(block));
+   g(std::move(block));
+   block.info();
 }
