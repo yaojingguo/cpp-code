@@ -19,9 +19,14 @@ struct Z {
    Z(const int&, const int&) {}
 };
 
+// template<typename T, typename A1, typename A2>
+// T* factory(A1& a1, A2& a2) {
+//    return new T(a1, a2);
+// }
+
 template<typename T, typename A1, typename A2>
-T* factory(A1& a1, A2& a2) {
-   return new T(a1, a2);
+T* factory(A1&& a1, A2&& a2) {
+   return new T(std::forward<A1>(a1), std::forward<A2>(a2));
 }
 
 // reference-overload.cpp
@@ -66,5 +71,6 @@ int main()
    // f(MemoryBlock());
    int a = 4, b = 5;
    W* pw = factory<W>(a, b);
+   Z* pz = factory<Z>(2, 2);
 }
 

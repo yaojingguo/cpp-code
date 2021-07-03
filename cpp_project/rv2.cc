@@ -1,6 +1,3 @@
-// named rvalue reference -> lvalue
-// unnamed rvalue reference -> rvalue
-
 // named-reference.cpp
 // Compile with: /EHsc
 #include <iostream>
