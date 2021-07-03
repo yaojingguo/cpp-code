@@ -24,7 +24,6 @@ int main(int argc, char const *argv[]) {
   // func2(10);
   // compile error: candidate function not viable: expects an l-value for 1st argument
   // func2(value_func());
-
   func1(100);
   return 0;
 }
