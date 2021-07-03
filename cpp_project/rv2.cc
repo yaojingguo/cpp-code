@@ -1,4 +1,4 @@
-//   named rvalue reference -> lvalue
+// named rvalue reference -> lvalue
 // unnamed rvalue reference -> rvalue
 
 // named-reference.cpp
