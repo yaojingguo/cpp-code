@@ -4,7 +4,8 @@
 #include <string>
 using namespace std;
 
-template<typename T> struct S;
+template<typename T>
+struct S;
 
 // The following structures specialize S by
 // lvalue reference (T&), const lvalue reference (const T&),
