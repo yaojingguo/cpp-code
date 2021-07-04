@@ -5,6 +5,7 @@
 #include <iostream>
 #include <set>
 #include <algorithm>
+#include <variant>
 
 using namespace std;
 
@@ -101,7 +102,14 @@ void uniform_initialization_usage()
   std::vector<S> v3{{"Norah", 2.7}, {"Frank", 3.5}, {"Jeri", 85.9}};
 }
 
-int main(int argc, char const *argv[])
+void lambda_usage() {
+  vector<int> v{1, 2, 3, 4, 5};
+  int x = 2;
+  int y = 4;
+  auto result = find_if(begin(v), end(v), [=](int i) { return i > x && i < y; });
+}
+
+int main()
 {
   multimap_usage();
   multiset_usage();
