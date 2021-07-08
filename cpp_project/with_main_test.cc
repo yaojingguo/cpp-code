@@ -14,9 +14,14 @@ class Environment : public ::testing::Environment {
   void TearDown() override { std::cout << "Global tear down\n"; }
 };
 
-TEST(Number, Compare) { EXPECT_EQ(1, 1); }
+TEST(Number, Compare) { 
+  std::cout << "one is equal to one\n";
+  EXPECT_EQ(1, 1);
+}
 
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
+
+  ::testing::AddGlobalTestEnvironment(new Environment());
   return RUN_ALL_TESTS();
 }
