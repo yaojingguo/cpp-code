@@ -4,6 +4,9 @@ template <typename E>
 Queue<E>::Queue() {}
 
 template <typename E>
+Queue<E>::~Queue() {}
+
+template <typename E>
 void Queue<E>::Enqueue(E element) {
   list_.push_back(element);
 }

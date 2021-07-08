@@ -1,11 +1,13 @@
 #pragma once
-#include "list"
+
+#include <list>
 using namespace std;
 
 template <typename E>
 class Queue {
  public:
   Queue();
+  ~Queue();
   void Enqueue(E element);
   E Dequeue();
   size_t size() const;
