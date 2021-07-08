@@ -9,7 +9,7 @@ cc_test(
 
 cc_test(
   name = "queue_test",
-  srcs = ["queue_test.cc", "queue.cc", "queue.h"],
+  srcs = ["queue_test.cc", "queue.h"],
   deps = [
     "@gtest//:gtest",
     "@gtest//:gtest_main",

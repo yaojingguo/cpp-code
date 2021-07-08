@@ -28,8 +28,9 @@ void Queue<E>::Enqueue(E element) {
 
 template <typename E>
 E Queue<E>::Dequeue() {
-  E front = list_.front();
+  E head = list_.front();
   list_.pop_front();
+  return head;
 }
 
 template <typename E>
