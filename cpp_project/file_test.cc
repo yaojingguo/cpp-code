@@ -37,3 +37,8 @@ TEST(CppRef, One) {
       std::cout << "read back from file: " << d << ' ' << n << ' ' << str << '\n';
   }
 }
+
+
+TEST(CppRef, Two) {
+  std::cout << "two test running" << std::endl;
+}
