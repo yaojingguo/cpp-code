@@ -1,10 +1,28 @@
 #include <cxxabi.h>    // for __cxa_demangle
 #include <dlfcn.h>     // for dladdr
 #include <execinfo.h>  // for backtrace
-
 #include <sstream>
 #include <string>
 #include <iostream>
+
+void a();
+void b();
+void c();
+std::string Backtrace(int skip);
+
+void a() {
+  b();
+}
+void b() {
+  c();
+}
+void c() {
+  std::string trace = Backtrace(1);
+  std::cout << trace << std::endl;
+}
+int main() {
+  a();
+}
 
 // A C++ function that will produce a stack trace with demangled function and
 // method names.
@@ -21,37 +39,18 @@ std::string Backtrace(int skip = 1) {
       char *demangled = NULL;
       int status;
       demangled = abi::__cxa_demangle(info.dli_sname, NULL, 0, &status);
-      snprintf(buf, sizeof(buf), "%-3d %*0p %s + %zd\n", i,
-               2 + sizeof(void *) * 2, callstack[i],
+      snprintf(buf, sizeof(buf), "%-3d %*p %s + %zd\n", i,
+               (int)(2 + sizeof(void *) * 2), callstack[i],
                status == 0 ? demangled : info.dli_sname,
                (char *)callstack[i] - (char *)info.dli_saddr);
       free(demangled);
     } else {
-      snprintf(buf, sizeof(buf), "%-3d %*0p\n", i, 2 + sizeof(void *) * 2,
+      snprintf(buf, sizeof(buf), "%-3d %*p\n", i, (int)(2 + sizeof(void *) * 2),
                callstack[i]);
     }
     trace_buf << buf;
   }
+
   if (nFrames == nMaxFrames) trace_buf << "  [truncated]\n";
   return trace_buf.str();
-}
-
-void a();
-void b();
-void c();
-
-void a() {
-  b();
-}
-
-void b() {
-  c();
-}
-
-void c() {
-  std::string trace = Backtrace();
-  std::cout << trace << std::endl;
-}
-int main() {
-  a();
 }
