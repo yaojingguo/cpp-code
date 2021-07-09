@@ -39,10 +39,12 @@ std::string Backtrace(int skip = 1) {
       char *demangled = NULL;
       int status;
       demangled = abi::__cxa_demangle(info.dli_sname, NULL, 0, &status);
+      printf("%s, 0x%p\n", info.dli_fname, info.dli_fbase);
       snprintf(buf, sizeof(buf), "%-3d %*p %s + %zd\n", i,
                (int)(2 + sizeof(void *) * 2), callstack[i],
                status == 0 ? demangled : info.dli_sname,
                (char *)callstack[i] - (char *)info.dli_saddr);
+      printf("offset: %ld\n",  (char *)info.dli_saddr - (char*) info.dli_fbase);
       free(demangled);
     } else {
       snprintf(buf, sizeof(buf), "%-3d %*p\n", i, (int)(2 + sizeof(void *) * 2),
